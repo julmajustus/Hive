@@ -6,7 +6,7 @@
 /*   By: jmakkone <jmakkone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 18:25:15 by jmakkone          #+#    #+#             */
-/*   Updated: 2024/04/25 13:59:22 by jmakkone         ###   ########.fr       */
+/*   Updated: 2024/04/30 09:34:34 by jmakkone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,12 @@ int	ft_atoi(const char *str)
 	}
 	while (*str && ft_isdigit(*str) == 1)
 	{
-		check = sum;
-		sum = sum * 10 + *str - 48;
-		if (sum < check && msing == 1)
+		check = sum * 10 + *str - 48;
+		if (check / 10 != sum && msing == 1)
 			return (-1);
-		if (sum < check && msing == -1)
+		if (check / 10 != sum && msing == -1)
 			return (0);
+		sum = check;
 		str++;
 	}
 	return ((int)sum * msing);
