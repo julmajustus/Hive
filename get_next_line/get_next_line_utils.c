@@ -6,7 +6,7 @@
 /*   By: jmakkone <jmakkone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 12:45:32 by jmakkone          #+#    #+#             */
-/*   Updated: 2024/05/13 13:05:59 by jmakkone         ###   ########.fr       */
+/*   Updated: 2024/05/17 01:40:23 by jmakkone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *s)
 	size_t	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i] != '\0')
 		i++;
 	return (i);
@@ -28,6 +30,8 @@ char	*ft_strchr(const char *s, int c)
 	char			*ptr;
 	unsigned char	uc;
 
+	if (!s)
+		return (NULL);
 	uc = (unsigned char)c;
 	ptr = (char *)s;
 	len = ft_strlen(s) + 1;
@@ -42,13 +46,14 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
 	size_t	slen;
 	char	*substr;
 
+	if (!s)
+		return (NULL);
 	slen = ft_strlen(s);
 	if (start >= slen)
 		return (ft_strdup(""));
@@ -73,6 +78,8 @@ char	*ft_strdup(const char *s)
 	char	*str;
 	char	*ptr;
 
+	if (!s)
+		return (NULL);
 	str = malloc(sizeof(char) * ft_strlen(s) + 1);
 	if (!str)
 		return (NULL);

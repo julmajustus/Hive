@@ -6,25 +6,23 @@
 /*   By: jmakkone <jmakkone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 12:36:32 by jmakkone          #+#    #+#             */
-/*   Updated: 2024/05/13 13:17:57 by jmakkone         ###   ########.fr       */
+/*   Updated: 2024/05/17 01:43:46 by jmakkone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-static void	ft_free(char **ptr)
+static char	*ft_free(char *ptr)
 {
-	if (*ptr)
-	{
-		free(*ptr);
-		*ptr = NULL;
-	}
+	free(ptr);
+	ptr = NULL;
+	return (ptr);
 }
 
-static char	*read_fd(int fd, char *read_buf, char *static_buf)
+static char	*read_fd(int fd, char *read_buf, char **static_buf)
 {
-	ssize_t read_count;
+	ssize_t	read_count;
 	char	*tmp;
 
 	read_count = 1;
@@ -32,79 +30,77 @@ static char	*read_fd(int fd, char *read_buf, char *static_buf)
 	{
 		read_count = read(fd, read_buf, BUFFER_SIZE);
 		if (read_count == -1)
-			return (ft_free(&static_buf), NULL);
-		if (read_count == 0)
+			return (ft_free(*static_buf));
+		else if (read_count == 0)
 			break ;
 		read_buf[read_count] = '\0';
-		//		printf("read_count %ld\n", read_count);
-		if (!static_buf)
+		if (!*static_buf)
 		{
-			static_buf = ft_strdup("");
-			if (!static_buf)
-				return(NULL);
+			*static_buf = ft_strdup("");
+			if (!*static_buf)
+				return (NULL);
 		}
-		tmp = static_buf;
-		static_buf = ft_strjoin(tmp, read_buf);
-		ft_free(&tmp);
-		if (!static_buf)
-			return (ft_free(&static_buf), NULL);
-		if (read_buf[read_count - 1] == '\n')
+		tmp = *static_buf;
+		*static_buf = ft_strjoin(tmp, read_buf);
+		tmp = ft_free(tmp);
+		if (ft_strchr(read_buf, '\n'))
 			break ;
-	}	
-	//	printf("read_count %ld\n", read_count);
-	//	printf("static_buf content after reading fd >> '%s'\n", static_buf);
+	}
+	return (*static_buf);
+}
+
+static char	*get_line(char *static_buf)
+{
+	size_t	i;
+	char	*new_line;
+
+	i = 0;
+	if (!static_buf)
+		return (NULL);
+	if (static_buf[i] == '\n' || static_buf[i] == '\0')
+	{
+		new_line = ft_substr(static_buf, 0, 1);
+		if (!new_line)
+			return (NULL);
+	}
+	else
+	{
+		while (static_buf[i] != '\n' && static_buf[i] != '\0')
+			i++;
+		new_line = ft_substr(static_buf, 0, i + 1);
+		if (!new_line)
+			return (NULL);
+	}
+	if (!*new_line)
+		return (ft_free(new_line));
+	return (new_line);
+}
+
+static char	*update_static_buf(char *static_buf, char *line)
+{
+	char	*new_static_buf;
+
+	new_static_buf = static_buf;
+	static_buf = ft_strdup(new_static_buf + ft_strlen(line));
+	new_static_buf = ft_free(new_static_buf);
 	return (static_buf);
 }
 
-static char	*rm_line(char *line)
-{
-	size_t	i;
-	char	*tmp;
-
-	i = 0;
-	if (!line || !*line)
-		return (ft_free(&line), ft_free(&tmp), NULL);
-	while (line[i] != '\n' && line[i] != '\0')
-		i++;
-	//	if (line[i] == '\0' || line[1] == '\0')
-	//		return (NULL);
-	tmp = ft_substr(line, i + 1, ft_strlen(line) - i);
-	//	printf("rm_line_check");
-	if (!tmp || !*tmp)
-	{
-		ft_free(&tmp);
-		return (NULL);
-	}
-	//	printf("rm_line_line2 check %s\n", line);
-	line[i + 1] = '\0';
-	//	printf("rm_line_line3 check %s\n", line);
-	return (tmp);
-}
 char	*get_next_line(int fd)
 {
 	static char	*static_buf;
 	char		read_buf[BUFFER_SIZE + 1];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX)
 		return (NULL);
-//	read_buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-//	if (!read_buf)
-//		return (NULL);
-	line = read_fd(fd, read_buf, static_buf);
-//	ft_free(&read_buf);
-//	if (!line)
-//	{
-//		ft_free(&line);
-//		ft_free(&static_buf);
-//		return (NULL);
-//	}
-	//	printf("get_next_line line check1 %s\n", line);
-	static_buf = rm_line(line);
-	if (!static_buf || !*static_buf)
+	static_buf = read_fd(fd, read_buf, &static_buf);
+	line = get_line(static_buf);
+	if (!line)
 	{
-		ft_free(&static_buf);
+		static_buf = ft_free(static_buf);
+		return (NULL);
 	}
+	static_buf = update_static_buf(static_buf, line);
 	return (line);
-
 }
