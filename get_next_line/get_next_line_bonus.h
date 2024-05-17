@@ -6,7 +6,7 @@
 /*   By: jmakkone <jmakkone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 12:46:07 by jmakkone          #+#    #+#             */
-/*   Updated: 2024/05/17 01:33:59 by jmakkone         ###   ########.fr       */
+/*   Updated: 2024/05/17 08:54:55 by jmakkone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 # define MAX_FD 1024
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000
+#  define BUFFER_SIZE 1024
 # endif
 
 char	*get_next_line(int fd);

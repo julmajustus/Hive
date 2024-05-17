@@ -6,12 +6,11 @@
 /*   By: jmakkone <jmakkone@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/09 12:36:32 by jmakkone          #+#    #+#             */
-/*   Updated: 2024/05/17 01:43:46 by jmakkone         ###   ########.fr       */
+/*   Updated: 2024/05/17 08:55:26 by jmakkone         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static char	*ft_free(char *ptr)
 {
