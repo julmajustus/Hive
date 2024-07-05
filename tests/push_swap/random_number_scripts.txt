@@ -1,0 +1,6 @@
+ARG=$(shuf -i 0-1500 | tr '\n' ' ') && ./push_swap $ARG | wc -l
+
+
+ARG=$(awk 'BEGIN { srand(); for (i = 0; i <= 500; i++) { nums[i] = i; } for (i = 500; i > 0; i--) { j = int(rand() * (i + 1)); temp = nums[i]; nums[i] = nums[j]; nums[j] = temp; } for (i = 0; i <= 500; i++) { print nums[i]; } }' | tr '\n' ' ') && ./push_swap $ARG
+| wc -l
+ARG=$(ruby -e "puts (-500..0).to_a.shuffle.join(' ')"); ./push_swap $ARG | wc -l
